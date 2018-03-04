@@ -7,6 +7,7 @@
 #define f2str(fx,str) sprintf(str,"%.1f",fx)
 #define ptr2str(px,str) sprintf(str,"%p",px)
 
+
 void RCC_Configuration(void);
 void GPIO_Configuration(void);
 void NVIC_configuration(void);
@@ -20,6 +21,7 @@ void	SendString(USART_TypeDef*,char*);
 void	delayms(int);
 void	delay_us(uint32_t);
 float	map(float,float,float,float,float);
+
 //void	int2str(int,char*);
 //void	f2str(float,char*);
 //void	ptr2str(void* ptr,char *s);
@@ -101,10 +103,15 @@ static void GPIO_Configuration(void)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
 	//ªO¸üS2(PC13)»PS3(PC4)»PS4(PC5)
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_15; 
+	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_15; 
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	
+	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;	
+	//GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_12|GPIO_Pin_13; 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;	
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;	
+	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
 }
 static void NVIC_configuration(void)
@@ -207,7 +214,7 @@ static void SendString(USART_TypeDef* USARTx,char* string)
 				{				
 				break;				
 				}
-			if(i>strlen(string))
+			if(i>strlen(string)||string[i]==0)
 			{
 			break;
 			}
