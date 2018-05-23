@@ -82,17 +82,17 @@ int main(void)
 		char len_cmd[16]="AT+CIPSEND=0,";
 		
 		//與感應器溝通 取得讀數
-		NVIC_off();
+		//NVIC_off();
 		//delayms(2000);
 		SendString(USART1,"\n\r");
 		DHT22_begin(GPIOD,GPIO_Pin_7);
-		delayms(500);
+		delayms(100);
 		temp=DHT22_readtemp();
-		delayms(500);
+		delayms(100);
 		humid=DHT22_readhumid();
-		delayms(500);
+		delayms(100);
 		lux=BH1750FVI_HRget();
-		NVIC_on();
+		//NVIC_on();
 		
 		//溫度轉換字串
 		f2str(temp,temp_s);
@@ -178,20 +178,20 @@ void CMD_Execute(void)
 		}
 		case 'F':
 		{
-			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_12);;}
-			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_12);;}
+			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_10);}
+			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_10);}
 			break;
 		}
 		case 'L':
 		{
-			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_13);;}
-			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_13);;}
+			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_12);}
+			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_12);}			
 			break;			
 		}
 		case 'U':
 		{
-			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_10);;}
-			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_10);;}
+			if(cmd[4]=='0'){GPIO_ResetBits(GPIOD,GPIO_Pin_13);;}
+			if(cmd[4]=='1'){GPIO_SetBits(GPIOD,GPIO_Pin_13);;}
 			break;
 		}
 	}
@@ -206,15 +206,27 @@ void NVIC_off(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
+	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+	
+	NVIC_Init(&NVIC_InitStructure);	
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
 	NVIC_Init(&NVIC_InitStructure);	
 }
 void NVIC_on(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
+	
+	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);	
 	
 	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
